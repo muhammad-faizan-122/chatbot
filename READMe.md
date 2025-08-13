@@ -22,14 +22,14 @@ It’s intended for local use and small-scale demos, not large-scale production.
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/yourusername/langgraph-chatbot.git
-   cd langgraph-chatbot
+   https://github.com/muhammad-faizan-122/chatbot.git
+   cd chatbot
    ```
 
 2. **Install dependencies**
 
    ```bash
-   pip install -U streamlit langgraph langsmith python-dotenv
+   pip install -r requirements.txt
    ```
 
 3. **Set up environment variables**
@@ -39,7 +39,7 @@ It’s intended for local use and small-scale demos, not large-scale production.
    GOOGLE_API_KEY=your_google_api_key
    ```
 
-   You can get your API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+   You can get your free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
 
 ---
 
