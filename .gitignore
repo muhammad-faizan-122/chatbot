@@ -1,0 +1,4 @@
+# env file contains confidential credentials like Google api key, etc
+.env
+# experimentals directory contains test files or notebooks
+experiments/
