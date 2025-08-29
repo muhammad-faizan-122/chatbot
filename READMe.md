@@ -4,7 +4,8 @@ This is a chatbot built with **LangGraph** and **Google Gemini** as the LLM, wit
 
 It features an intelligent router to decide when to perform a web search for up-to-date information and saves conversation history so you can pick up where you left off.
 
-## GUI![ChatBot App](imgs/gui.png)
+## GUI
+![ChatBot App](imgs/gui2.png)
 ---
 
 ## Features
