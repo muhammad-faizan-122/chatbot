@@ -87,7 +87,6 @@ class ChatUI:
 
     def run(self):
         """Runs the main chat application loop."""
-        self.initialize_session_state()
         self.display_chat_history()
         self.handle_user_input()
 
