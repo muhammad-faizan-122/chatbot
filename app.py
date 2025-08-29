@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.logger import log
-from utils.graph import GraphBuilder
 from langchain_core.messages import HumanMessage, AIMessage
+from utils.search_graph import GraphBuilder
 
 
 class ChatUI:

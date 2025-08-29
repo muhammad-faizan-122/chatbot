@@ -1,45 +1,48 @@
 # LangGraph Chatbot (Streamlit Frontend)
 
-This is a simple chatbot built with **LangGraph** and **Google Gemini** as the LLM, with a **Streamlit** interface for chatting in the browser.
-It’s intended for local use and small-scale demos, not large-scale production.
+This is a chatbot built with **LangGraph** and **Google Gemini** as the LLM, with a **Streamlit** interface for chatting in the browser.
 
-## GUI
-![ChatBot App](imgs/gui.png)
+It features an intelligent router to decide when to perform a web search for up-to-date information and saves conversation history so you can pick up where you left off.
+
+## GUI![ChatBot App](imgs/gui.png)
 ---
 
 ## Features
 
-* Simple, clean chat interface in the browser.
-* Powered by LangGraph for conversation flow.
-* Uses Google Gemini for generating responses.
-* Keeps conversation history during the session.
-* Can be accessed from other devices on the same local network.
+*   **Intelligent Web Search**: A router analyzes user queries to intelligently decide whether a web search is required for the most current and relevant answers.
+*   **Persistent Conversation History**: Uses thread-based persistence, so conversation history is saved. You can continue your chat even after closing the browser or restarting the app.
+*   **Advanced Logic with LangGraph**: Powered by LangGraph to create a flexible, stateful conversation flow.
+*   **Google Gemini LLM**: Uses Google Gemini for generating high-quality, conversational responses.
+*   **Simple Web Interface**: A clean and simple chat interface built with Streamlit.
+*   **Local Network Access**: Can be accessed from other devices on the same local network.
 
 ---
 
 ## Installation
 
-1. **Clone the repository**
+1.  **Clone the repository**
 
-   ```bash
-   https://github.com/muhammad-faizan-122/chatbot.git
-   cd chatbot
-   ```
+    ```bash
+    https://github.com/muhammad-faizan-122/chatbot.git
+    cd chatbot
+    ```
 
-2. **Install dependencies**
+2.  **Install dependencies**
+    Ensure your `requirements.txt` includes `langchain-community` and `tavily-python`, then install:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+3.  **Set up environment variables**
+    Create a `.env` file in the project root and add your API keys:
 
-3. **Set up environment variables**
-   Create a `.env` file in the project root and add:
+    ```env
+    GOOGLE_API_KEY=your_google_api_key
+    TAVILY_API_KEY=your_tavily_search_api_key
+    ```
 
-   ```env
-   GOOGLE_API_KEY=your_google_api_key
-   ```
-
-   You can get your free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+    *   You can get your free Google API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+    *   You can get a free Tavily API key from the [Tavily website](https://tavily.com/).
 
 ---
 
@@ -85,16 +88,16 @@ http://192.168.0.101:8501
 
 ### Notes:
 
-* Make sure your firewall allows inbound TCP on port **8501**.
-* Some routers block device-to-device communication (AP isolation).
-* This app is not secured with authentication — don’t expose it to the public internet.
+*   Make sure your firewall allows inbound TCP on port **8501**.
+*   Some routers block device-to-device communication (AP isolation).
+*   This app is not secured with authentication — don’t expose it to the public internet.
 
 ---
 
 ## Limitations
 
-* Session history is reset when the app restarts.
-* Requires a working Google API key.
-* Not optimized for heavy production workloads.
+*   Requires working API keys for Google and Tavily.
+*   Not optimized for heavy production workloads.
+*   The default persistence is in-memory or local; for scaled deployment, a more robust database (like Postgres) would be needed.
 
 ---
