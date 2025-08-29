@@ -2,3 +2,6 @@
 .env
 # experimentals directory contains test files or notebooks
 experiments/
+
+# ignore python cache files
+*__pycache__/
