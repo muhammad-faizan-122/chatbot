@@ -4,7 +4,7 @@ This is a simple chatbot built with **LangGraph** and **Google Gemini** as the L
 It’s intended for local use and small-scale demos, not large-scale production.
 
 ## GUI
-![ChatBot App](gui.png)
+![ChatBot App](imgs/gui.png)
 ---
 
 ## Features
