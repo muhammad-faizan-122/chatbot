@@ -32,7 +32,7 @@ class ChatUI:
         """Initializes the session state if it doesn't exist."""
         if "messages" not in st.session_state:
             st.session_state.messages = []
-            st.session_state.chatbot_graph = GraphBuilder().build_graph()
+            st.session_state.chatbot_graph = GraphBuilder.build_graph()
             log.debug("Session state initialized for a new user.")
 
     def display_chat_history(self):

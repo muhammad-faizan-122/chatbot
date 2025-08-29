@@ -40,18 +40,12 @@ class GraphBuilder:
     Builds the LangGraph for the chatbot.
     """
 
-    def __init__(self, model_name: str = "google_genai:gemini-1.5-flash"):
-        """
-        Initializes the GraphBuilder.
-        """
-        self.model_name = model_name
-        log.info(f"GraphBuilder initialized with model: {self.model_name}")
-
-    def build_graph(self):
+    @staticmethod
+    def build_graph(model_name: str = "google_genai:gemini-1.5-flash"):
         """
         Builds and compiles the LangGraph.
         """
-        chat_model = init_chat_model(self.model_name)
+        chat_model = init_chat_model(model_name)
         chatbot_node = ChatbotNode(chat_model=chat_model)
         log.info("Chat model and ChatbotNode created.")
 
