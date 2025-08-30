@@ -1,39 +1,52 @@
 import sqlite3
 from utils.logger import log
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Database:
     """
-    A class to handle SQLite database operations for the chatbot.
+    A class to handle SQLite database operations for the chatbot,
+    including user authentication and conversation history.
     """
 
     def __init__(self, db_name="db/chatbot_history.db"):
         """
-        Initializes the Database class and creates the conversations table if it doesn't exist.
-
-        Args:
-            db_name (str): The name of the database file.
+        Initializes the Database class and creates necessary tables.
         """
         try:
-            # The check_same_thread=False argument is important for multi-threaded applications
-            # like Streamlit to prevent threading issues with SQLite.
             self.conn = sqlite3.connect(db_name, check_same_thread=False)
             self.cursor = self.conn.cursor()
-            self.create_table()
+            # Create both tables on initialization
+            self.create_conversations_table()
+            self.create_users_table()
         except sqlite3.Error as e:
-            print(f"Database connection error: {e}")
             log.error(f"Database connection error: {e}")
 
-    def create_table(self):
-        """
-        Creates the 'conversations' table if it does not exist.
-        """
+    def create_users_table(self):
+        """Creates the 'users' table if it does not exist."""
+        try:
+            self.cursor.execute(
+                """
+                CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL
+                )
+            """
+            )
+            self.conn.commit()
+            log.info("Database table 'users' is ready.")
+        except sqlite3.Error as e:
+            log.error(f"Error creating users table: {e}")
+
+    def create_conversations_table(self):
+        """Creates the 'conversations' table if it does not exist."""
         try:
             self.cursor.execute(
                 """
                 CREATE TABLE IF NOT EXISTS conversations (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id TEXT NOT NULL,
+                    username TEXT NOT NULL,
                     role TEXT NOT NULL,
                     content TEXT NOT NULL,
                     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -43,94 +56,98 @@ class Database:
             self.conn.commit()
             log.info("Database table 'conversations' is ready.")
         except sqlite3.Error as e:
-            log.error(f"Error creating table: {e}")
+            log.error(f"Error creating conversations table: {e}")
 
-    def insert_conversation(self, user_id, role, content):
-        """
-        Inserts a message into the conversations table.
+    def add_user(self, username, password):
+        """Adds a new user to the database with a hashed password."""
+        try:
+            # Generate a secure hash of the password
+            password_hash = generate_password_hash(password)
+            self.cursor.execute(
+                "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+                (username, password_hash),
+            )
+            self.conn.commit()
+            log.info(f"User '{username}' created successfully.")
+            return True
+        except sqlite3.IntegrityError:
+            # This error occurs if the username is already taken
+            log.warning(f"Attempted to create a user that already exists: {username}")
+            return False
+        except sqlite3.Error as e:
+            log.error(f"Error adding user {username}: {e}")
+            return False
 
-        Args:
-            user_id (str): The unique identifier for the user session.
-            role (str): The role of the message sender (e.g., 'user' or 'assistant').
-            content (str): The content of the message.
-        """
+    def verify_user(self, username, password):
+        """Verifies a user's credentials against the stored hash."""
+        try:
+            self.cursor.execute(
+                "SELECT password_hash FROM users WHERE username = ?", (username,)
+            )
+            result = self.cursor.fetchone()
+            if result:
+                password_hash = result[0]
+                # Check if the provided password matches the stored hash
+                if check_password_hash(password_hash, password):
+                    log.info(f"User '{username}' authenticated successfully.")
+                    return True
+            log.warning(f"Failed authentication attempt for user '{username}'.")
+            return False
+        except sqlite3.Error as e:
+            log.error(f"Error verifying user {username}: {e}")
+            return False
+
+    def insert_conversation(self, username, role, content):
+        """Inserts a message into the conversations table, linked to a username."""
         try:
             self.cursor.execute(
                 """
-                INSERT INTO conversations (user_id, role, content)
+                INSERT INTO conversations (username, role, content)
                 VALUES (?, ?, ?)
             """,
-                (user_id, role, content),
+                (username, role, content),
             )
             self.conn.commit()
-            log.info(f"Inserted message for user_id: {user_id}")
+            log.info(f"Inserted message for user: {username}")
         except sqlite3.Error as e:
             log.error(f"Error inserting conversation: {e}")
 
-    def fetch_conversation_history(self, user_id):
-        """
-        Fetches the conversation history for a specific user_id.
-
-        Args:
-            user_id (str): The unique identifier for the user session.
-
-        Returns:
-            list: A list of tuples, where each tuple represents a message in the conversation.
-                  Returns an empty list if no history is found or an error occurs.
-        """
+    def fetch_conversation_history(self, username):
+        """Fetches the conversation history for a specific username."""
         try:
             self.cursor.execute(
                 """
                 SELECT role, content FROM conversations
-                WHERE user_id = ?
+                WHERE username = ?
                 ORDER BY timestamp ASC
             """,
-                (user_id,),
+                (username,),
             )
             history = self.cursor.fetchall()
-            log.info(f"Fetched {len(history)} messages for user_id: {user_id}")
-            return history
+            log.info(f"Fetched {len(history)} messages for user: {username}")
+            # Convert list of tuples to list of dicts for session state
+            return [{"role": role, "content": content} for role, content in history]
         except sqlite3.Error as e:
-            log.error(f"Error fetching conversation history for user_id {user_id}: {e}")
+            log.error(f"Error fetching conversation history for user {username}: {e}")
             return []
 
-    def delete_conversation_history(self, user_id):
-        """
-        Deletes the entire conversation history for a specific user_id.
-
-        Args:
-            user_id (str): The unique identifier for the user session whose history will be deleted.
-
-        Returns:
-            bool: True if deletion was successful, False otherwise.
-        """
+    # delete_conversation_history can remain the same, just ensure it uses 'username'
+    def delete_conversation_history(self, username):
+        """Deletes the entire conversation history for a specific username."""
         try:
             self.cursor.execute(
-                """
-                DELETE FROM conversations
-                WHERE user_id = ?
-            """,
-                (user_id,),
+                "DELETE FROM conversations WHERE username = ?", (username,)
             )
             self.conn.commit()
-            # The rowcount attribute returns the number of rows affected by the last operation.
             if self.cursor.rowcount > 0:
-                log.info(
-                    f"Successfully deleted {self.cursor.rowcount} messages for user_id: {user_id}"
-                )
-            else:
-                log.warning(
-                    f"No conversation history found to delete for user_id: {user_id}"
-                )
+                log.info(f"Deleted history for user: {username}")
             return True
         except sqlite3.Error as e:
-            log.error(f"Error deleting conversation history for user_id {user_id}: {e}")
+            log.error(f"Error deleting history for user {username}: {e}")
             return False
 
     def close_connection(self):
-        """
-        Closes the database connection.
-        """
+        """Closes the database connection."""
         if self.conn:
             self.conn.close()
             log.info("Database connection closed.")
