@@ -2,6 +2,8 @@ import streamlit as st
 from utils.logger import log
 from langchain_core.messages import HumanMessage, AIMessage
 from utils.search_graph import GraphBuilder
+from utils.db import Database
+import uuid
 
 
 class ChatUI:
@@ -26,13 +28,19 @@ class ChatUI:
         )
         st.title("🤖 LangGraph Chatbot")
         self.initialize_session_state()
+        self.db = Database()
         log.info("ChatUI initialized successfully.")
+
+    def get_uuid(self):
+        """Generates a unique identifier for the session."""
+        return str(uuid.uuid4())
 
     def initialize_session_state(self):
         """Initializes the session state if it doesn't exist."""
         if "messages" not in st.session_state:
             st.session_state.messages = []
             st.session_state.chatbot_graph = GraphBuilder.build_graph()
+            st.session_state.user_id = self.get_uuid()
             log.debug("Session state initialized for a new user.")
 
     def display_chat_history(self):
@@ -75,13 +83,16 @@ class ChatUI:
 
             st.chat_message("user").markdown(prompt)
             st.session_state.messages.append({"role": "user", "content": prompt})
-
+            self.db.insert_conversation(st.session_state.user_id, "user", prompt)
             with st.chat_message("assistant"):
                 response_text = st.write_stream(
                     self.get_assistant_response_stream(prompt)
                 )
                 st.session_state.messages.append(
                     {"role": "assistant", "content": response_text}
+                )
+                self.db.insert_conversation(
+                    st.session_state.user_id, "assistant", response_text
                 )
             log.info("Successfully displayed assistant response.")
 

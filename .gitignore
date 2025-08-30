@@ -11,3 +11,6 @@ experiments/
 
 # ignore json files used for testing
 *.json
+
+# ignore sqlite database files
+*.db

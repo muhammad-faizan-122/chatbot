@@ -63,7 +63,10 @@ class ChatbotNode:
         try:
             response = self.chat_model.invoke(messages)
             log.debug(f"ChatbotNode response: {response}")
-            return {"messages": [response], "documents": documents}
+            return {
+                "messages": [response],
+                "documents": [],
+            }  # Clear documents after use
 
         except Exception as e:
             log.error(f"Error in ChatbotNode execution: {e}")
