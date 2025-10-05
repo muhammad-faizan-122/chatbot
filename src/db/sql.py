@@ -1,5 +1,5 @@
 import sqlite3
-from utils.logger import log
+from src.common.logger import log
 from werkzeug.security import generate_password_hash, check_password_hash
 
 

@@ -14,3 +14,7 @@ experiments/
 
 # ignore sqlite database files
 *.db
+
+# gguf model
+*.gguf
+

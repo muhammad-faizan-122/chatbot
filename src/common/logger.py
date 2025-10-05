@@ -1,8 +1,8 @@
-import sys
 from loguru import logger
+import os
 
 
-def setup_logger():
+def setup_logger(file_name="app.log", dir="logs"):
     """
     Configures a standardized logger for the application.
 
@@ -13,20 +13,13 @@ def setup_logger():
     # Remove the default handler to avoid duplicate logs in the console
     logger.remove()
 
-    # Add a new handler for console output with a specific format and level
+    fp = os.path.join(dir, file_name)
     logger.add(
-        sys.stderr,
-        level="INFO",
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-    )
-
-    # Add a file handler for detailed debug logs with rotation and retention
-    logger.add(
-        "logs/app.log",
+        fp,
         rotation="10 MB",  # Rotate the log file when it reaches 10 MB
         retention="7 days",  # Keep logs for up to 7 days
         level="DEBUG",  # Log all messages from DEBUG level and above
-        format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}",
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {level} | {file}: {function}: {line} - [{message}]",
         enqueue=True,  # Make logging thread-safe (important for Streamlit)
         backtrace=True,  # Show the full stack trace on exceptions
         diagnose=True,  # Add exception variable values for debugging

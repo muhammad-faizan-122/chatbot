@@ -1,4 +1,4 @@
-from .logger import log
+from src.common.logger import log
 from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 from .states import State
@@ -6,8 +6,9 @@ from dotenv import load_dotenv
 from langchain_tavily import TavilySearch
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
-from .commons import save_json_file
+from src.common.utils import save_json_file
 from langgraph.checkpoint.memory import MemorySaver
+
 
 # Load environment variables from .env file
 load_dotenv(override=True)
@@ -122,7 +123,7 @@ class GraphBuilder:
             return "chatbot"
 
     @staticmethod
-    def build_graph(model_name: str = "google_genai:gemini-1.5-flash"):
+    def build_graph(model_name: str = "google_genai:gemini-2.5-flash"):
         """
         Builds and compiles the LangGraph.
         """
