@@ -1,90 +1,122 @@
-# LangGraph Chatbot (Streamlit Frontend)
+# 🧠 Chatbot-App
 
-This is a chatbot is utilizing Open source LLM quantized format of original Llama-3.2-1B of name `Llama-3.2-1B-Instruct-IQ3_M.gguf`, with a **Streamlit** interface for chatting in the browser.
-
-It features an intelligent router to decide when to perform a web search for up-to-date information and saves conversation history so you can pick up where you left off.
-
-## GUI
-![Authentication](imgs/authentication.png)
-![ChatBot](imgs/chatbot.png)
----
-
-## Features
-
-*   **Persistent Conversation History**: Use MongoDB to persist the chatting.
-*   **By defualt Open source GGUF Llama-3.2-1B LLM**: Uses Quanitized Llama-3.2 LLM for generating high-quality, conversational responses.
-*   **Gemini API based**: Uses Gemini API for generating high-quality, conversational responses.
-*   **Simple Web Interface**: A clean and simple chat interface built with Streamlit.
-*   **Local Network Access**: Can be accessed from other devices on the same local network.
+A lightweight chatbot application using an open-source **quantized** LLM: `Llama-3.2-1B-Instruct-IQ3_M.gguf`.  
+It provides a **simple Streamlit-based web interface**, supports **local network access**, and saves **chat history in MongoDB**.
 
 ---
 
-## Installation
+## 📸 GUI Preview
 
-1.  **Clone the repository**
+Authentication Screen | Chatbot Screen  
+:-------------------------:|:-------------------------:
+![Authentication](imgs/authentication.png) | ![ChatBot](imgs/chatbot.png)
 
-    ```bash
-    https://github.com/muhammad-faizan-122/chatbot.git
-    cd chatbot
-    ```
+---
 
-2.  **Install dependencies**
-    ```bash
-    pip install -r requirements.txt
-    ```
+## ✨ Features
 
+- ✅ **Quantized LLM (GGUF format)**  
+  Uses `Llama-3.2-1B-Instruct-IQ3_M.gguf` for generating conversational responses.
 
-## Usage
+- 💬 **Streamlit Web Interface**  
+  A clean and responsive chat interface in the browser.
 
-Run the chatbot locally:
+- 💾 **Persistent Chat History**  
+  MongoDB stores all chats and user authentication data.
+
+- 🌐 **Local Network Access**  
+  Access the app from any device on your local Wi-Fi.
+
+---
+
+## 📥 Prerequisites
+
+1. **Model Download**
+
+   Download the quantized GGUF model from Hugging Face:
+
+   [Llama-3.2-1B-Instruct-IQ3_M.gguf](https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/blob/main/Llama-3.2-1B-Instruct-IQ3_M.gguf)
+
+   Or run:
+
+   ```bash
+   wget https://huggingface.co/bartowski/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-IQ3_M.gguf
+   ```
+    Place the downloaded file inside the `model/` directory.
+
+2. **MongoDB Compass**
+   Install [MongoDB Compass](https://www.mongodb.com/try/download/compass) to visually inspect stored users and chat data.
+
+---
+
+## 🚀 Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone https://github.com/muhammad-faizan-122/chatbot.git
+   cd chatbot
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+---
+
+## ▶️ Running the App
+
+To start the chatbot locally:
 
 ```bash
 streamlit run app.py
 ```
 
-You’ll see something like:
+After running, you’ll see:
 
 ```
-Local URL: http://localhost:8501
+Local URL:   http://localhost:8501
 Network URL: http://192.168.x.x:8501
 ```
 
-Open the **Local URL** if you’re using the same machine.
-Open the **Network URL** on other devices connected to the same Wi-Fi/LAN.
+* Open the **Local URL** on the same machine.
+* Open the **Network URL** from another device on the same Wi-Fi/LAN.
 
 ---
 
-## Access from Local Network
+## 🌐 Access from Other Devices
 
-If you want other devices in your network to access it:
+To access the chatbot from other devices on your network:
 
 ```bash
 streamlit run app.py --server.address 0.0.0.0 --server.port 8501
 ```
 
-Then visit:
+Then open in a browser:
 
 ```
-http://<your-lan-ip>:8501
+http://<your-local-IP>:8501
 ```
 
-Example:
+**Example:**
 
 ```
 http://192.168.0.101:8501
 ```
 
-### Notes:
+---
 
-*   Make sure your firewall allows inbound TCP on port **8501**.
-*   Some routers block device-to-device communication (AP isolation).
-*   This app is not secured with authentication — don’t expose it to the public internet.
+## 📧 Contact
+
+If you find this useful or have feedback, feel free to [open an issue](https://github.com/muhammad-faizan-122/chatbot/issues) or reach out!
 
 ---
 
-## Limitations
+## 🪪 License
 
-*   Not optimized for heavy production workloads.
-*   The default persistence is in-memory or local; for scaled deployment, a more robust database would be needed.
+This project is open-source and available under the MIT License
 
 ---
+
