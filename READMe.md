@@ -5,13 +5,14 @@ This is a chatbot is utilizing Open source LLM quantized format of original Llam
 It features an intelligent router to decide when to perform a web search for up-to-date information and saves conversation history so you can pick up where you left off.
 
 ## GUI
-![ChatBot App](imgs/gui2.png)
+![Authentication](imgs/authentication.png)
+![ChatBot](imgs/chatbot.png)
 ---
 
 ## Features
 
 *   **Persistent Conversation History**: Use MongoDB to persist the chatting.
-*   **Open source GGUF Llama-3.2-1B LLM**: Uses Quanitized Llama-3.2 LLM for generating high-quality, conversational responses.
+*   **By defualt Open source GGUF Llama-3.2-1B LLM**: Uses Quanitized Llama-3.2 LLM for generating high-quality, conversational responses.
 *   **Gemini API based**: Uses Gemini API for generating high-quality, conversational responses.
 *   **Simple Web Interface**: A clean and simple chat interface built with Streamlit.
 *   **Local Network Access**: Can be accessed from other devices on the same local network.
@@ -32,14 +33,6 @@ It features an intelligent router to decide when to perform a web search for up-
     pip install -r requirements.txt
     ```
 
-3.  **Set up environment variables**
-    Create a `.env` file in the project root and add your API keys:
-
-    ```env
-    GOOGLE_API_KEY=your_google_api_key
-    ```
-    *   You can get your free Google API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
----
 
 ## Usage
 
