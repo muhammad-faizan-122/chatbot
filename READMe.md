@@ -1,6 +1,6 @@
 # LangGraph Chatbot (Streamlit Frontend)
 
-This is a chatbot built with **LangGraph** and **Google Gemini** as the LLM, with a **Streamlit** interface for chatting in the browser.
+This is a chatbot is utilizing Open source LLM quantized format of original Llama-3.2-1B of name `Llama-3.2-1B-Instruct-IQ3_M.gguf`, with a **Streamlit** interface for chatting in the browser.
 
 It features an intelligent router to decide when to perform a web search for up-to-date information and saves conversation history so you can pick up where you left off.
 
@@ -10,10 +10,9 @@ It features an intelligent router to decide when to perform a web search for up-
 
 ## Features
 
-*   **Intelligent Web Search**: A router analyzes user queries to intelligently decide whether a web search is required for the most current and relevant answers.
-*   **Persistent Conversation History**: Uses thread-based persistence, so conversation history is saved. You can continue your chat even after closing the browser or restarting the app.
-*   **Advanced Logic with LangGraph**: Powered by LangGraph to create a flexible, stateful conversation flow.
-*   **Google Gemini LLM**: Uses Google Gemini for generating high-quality, conversational responses.
+*   **Persistent Conversation History**: Use MongoDB to persist the chatting.
+*   **Open source GGUF Llama-3.2-1B LLM**: Uses Quanitized Llama-3.2 LLM for generating high-quality, conversational responses.
+*   **Gemini API based**: Uses Gemini API for generating high-quality, conversational responses.
 *   **Simple Web Interface**: A clean and simple chat interface built with Streamlit.
 *   **Local Network Access**: Can be accessed from other devices on the same local network.
 
@@ -29,7 +28,6 @@ It features an intelligent router to decide when to perform a web search for up-
     ```
 
 2.  **Install dependencies**
-    Ensure your `requirements.txt` includes `langchain-community` and `tavily-python`, then install:
     ```bash
     pip install -r requirements.txt
     ```
@@ -39,12 +37,8 @@ It features an intelligent router to decide when to perform a web search for up-
 
     ```env
     GOOGLE_API_KEY=your_google_api_key
-    TAVILY_API_KEY=your_tavily_search_api_key
     ```
-
     *   You can get your free Google API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-    *   You can get a free Tavily API key from the [Tavily website](https://tavily.com/).
-
 ---
 
 ## Usage
@@ -97,8 +91,7 @@ http://192.168.0.101:8501
 
 ## Limitations
 
-*   Requires working API keys for Google and Tavily.
 *   Not optimized for heavy production workloads.
-*   The default persistence is in-memory or local; for scaled deployment, a more robust database (like Postgres) would be needed.
+*   The default persistence is in-memory or local; for scaled deployment, a more robust database would be needed.
 
 ---
