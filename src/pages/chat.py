@@ -19,20 +19,7 @@ def app_page():
     with st.sidebar:
         if st.session_state["guest_mode"]:
             st.subheader("Guest Mode")
-
-            if not st.session_state["user_id"]:
-                st.session_state["user_id"] = str(uuid.uuid4())
-                log.debug("guest mode user_id", st.session_state["user_id"])
-
             if st.button("Login"):
-                log.info("Deleting all the Guess conversation.")
-                # No need to persist guess model conversation.
-                st.session_state["chat_db"].delete_many(
-                    {
-                        "user_id": st.session_state["user_id"],
-                        "conversation_id": st.session_state["conversation_id"],
-                    }
-                )
                 reset_session()
                 st.rerun()
 
@@ -48,7 +35,8 @@ def app_page():
         st.session_state["messages"] = []
         st.session_state["llm"] = get_llm_instant(llm_type="llamacpp")
         st.session_state["chat_db"] = MongoDB(db_name="bot", collection_name="chats")
-        st.session_state["guest_history"] = []
+        st.session_state["conversation_id"] = str(uuid.uuid4())
+        st.session_state["tmp_history"] = []
 
     # Display chat messages from history on app rerun
     for message in st.session_state["messages"]:
@@ -66,7 +54,7 @@ def app_page():
             st.markdown(prompt)
 
         if st.session_state["guest_mode"]:
-            chat_history = st.session_state["guest_history"]
+            chat_history = st.session_state["tmp_history"]
         else:
             chat_history = st.session_state["chat_db"].fetch_conversation_history(
                 st.session_state["user_id"],
@@ -76,20 +64,20 @@ def app_page():
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             response = st.write_stream(response_generator(prompt, chat_history))
-
+        log.debug(f"response by AI: {response}")
         # Add assistant response to chat history
         st.session_state["messages"].append({"role": "assistant", "content": response})
 
-        chat_info = {
-            "user_id": st.session_state["user_id"],
-            "conversation_id": st.session_state["conversation_id"],
-            "user": prompt,
-            "AI": "".join(response),
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        }
-
         # Maintain temp memory for guest mode without saving into Database
         if st.session_state["guest_mode"]:
-            st.session_state["guest_history"].append(chat_info)
+            st.session_state["tmp_history"].append({"user": prompt, "AI": response})
         else:
-            st.session_state["chat_db"].insert_one(chat_info)
+            st.session_state["chat_db"].insert_one(
+                doc={
+                    "user_id": st.session_state["user_id"],
+                    "conversation_id": st.session_state["conversation_id"],
+                    "user": prompt,
+                    "AI": response,
+                    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                }
+            )

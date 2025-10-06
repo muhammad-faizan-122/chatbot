@@ -16,4 +16,4 @@ else:
         login_page(guest_mode=True)
 
     elif st.session_state["page"] == "signup":
-        signup_page(extra_input_params=True, confirmPass=True)
+        signup_page(confirmPass=True)
