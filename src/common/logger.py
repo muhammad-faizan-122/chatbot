@@ -16,7 +16,7 @@ def setup_logger(file_name="app.log", dir="logs"):
     fp = os.path.join(dir, file_name)
     logger.add(
         fp,
-        rotation="10 MB",  # Rotate the log file when it reaches 10 MB
+        rotation="3 MB",  # Rotate the log file when it reaches 10 MB
         retention="7 days",  # Keep logs for up to 7 days
         level="DEBUG",  # Log all messages from DEBUG level and above
         format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {level} | {file}: {function}: {line} - [{message}]",

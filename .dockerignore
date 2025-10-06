@@ -1,0 +1,29 @@
+# env file contains confidential credentials like Google api key, etc
+.env
+
+# experimentals directory contains test files or notebooks
+experiments/
+
+# ignore python cache files
+*__pycache__/
+
+# ignore .log files
+*.log
+
+# ignore json files used for testing
+*.json
+
+# ignore sqlite database files
+*.db
+
+# gguf model
+*.gguf
+
+# block diagram and demo images
+block_diagrams/
+data/
+imgs/
+
+# unitest files
+unittest/
+
