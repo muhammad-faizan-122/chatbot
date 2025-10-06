@@ -3,6 +3,7 @@ from src.pages.utils.session_states import reset_session
 from src.llm.llm_factory import get_llm_instant
 from src.db.mongodb import MongoDB
 from datetime import datetime
+from src.common.logger import log
 import uuid
 
 
@@ -21,10 +22,10 @@ def app_page():
 
             if not st.session_state["user_id"]:
                 st.session_state["user_id"] = str(uuid.uuid4())
-                print("guest mode user_id", st.session_state["user_id"])
+                log.debug("guest mode user_id", st.session_state["user_id"])
 
             if st.button("Login"):
-                print("Deleting all the Guess conversation.")
+                log.info("Deleting all the Guess conversation.")
                 # No need to persist guess model conversation.
                 st.session_state["chat_db"].delete_many(
                     {

@@ -18,7 +18,6 @@ def init_session():
     if "password" not in st.session_state:
         st.session_state["password"] = ""
     if "auth_db" not in st.session_state:
-        print("auth_db instantiated!")
         st.session_state["auth_db"] = Authenticator(
             db_name="bot", collection_name="users"
         )

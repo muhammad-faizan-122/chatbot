@@ -1,6 +1,4 @@
 import streamlit as st
-from src.db.mongodb import Authenticator
-import time
 
 
 # Pages

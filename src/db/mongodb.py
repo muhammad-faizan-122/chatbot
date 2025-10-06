@@ -2,6 +2,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.errors import PyMongoError
 from typing import List, Optional
+from src.common.logger import log
 from datetime import datetime
 import bcrypt
 import streamlit as st
@@ -26,20 +27,20 @@ class MongoDB:
                 cls._client = MongoClient(host=host, port=port)
                 cls._db = cls._client[db_name]
                 cls._collection = cls._db[collection_name]
-                print("MongoDB connected successfully.")
+                log.info("MongoDB connected successfully.")
             except PyMongoError as e:
-                print(f"Connection to MongoDB failed: {e}")
+                log.error(f"Connection to MongoDB failed: {e}")
                 raise
 
         else:
-            print("client collection is already created...")
+            log.info("client collection is already created...")
         return cls._instance
 
     def get_collection(self, collection_name: str) -> Collection:
         try:
             return self._db[collection_name]
         except Exception as e:
-            print(f"Failed to access collection: {e}")
+            log.error(f"Failed to access collection: {e}")
             raise
 
     def insert_one(self, doc: dict) -> str:
@@ -49,7 +50,7 @@ class MongoDB:
             result = self._collection.insert_one(doc)
             return str(result.inserted_id)
         except PyMongoError as e:
-            print(f"Insert failed: {e}")
+            log.error(f"Insert failed: {e}")
             raise
 
     def insert_many(self, docs: list[dict]):
@@ -59,7 +60,7 @@ class MongoDB:
             result = self._collection.insert_many(docs)
             return bool(result.inserted_ids)
         except PyMongoError as e:
-            print(f"Insert many failed: {e}")
+            log.error(f"Insert many failed: {e}")
             return False
 
     def fetch_one(self, filter_query: dict) -> Optional[dict]:
@@ -71,7 +72,6 @@ class MongoDB:
     def fetch_conversation_history(self, user_id, conversation_id):
         history = []
         for doc in self._collection.find():
-            print(doc, type(doc))
             if (
                 doc.get("user_id") == user_id
                 and doc.get("conversation_id") == conversation_id
@@ -83,7 +83,7 @@ class MongoDB:
         try:
             return [doc for doc in self._collection.find()]
         except PyMongoError as e:
-            print(f"Fetch all failed: {e}")
+            log.error(f"Fetch all failed: {e}")
             return []
 
     def update_one(
@@ -98,7 +98,7 @@ class MongoDB:
             )
             return result.acknowledged and result.modified_count > 0
         except PyMongoError as e:
-            print(f"Update one failed: {e}")
+            log.error(f"Update one failed: {e}")
             return False
 
     def update_many(
@@ -111,29 +111,29 @@ class MongoDB:
             result = self._collection.update_many(
                 filter_query, {"$set": update_data}, upsert=upsert
             )
-            print(f"Total updated: {result.modified_count}")
+            log.debug(f"Total updated: {result.modified_count}")
             return result.acknowledged and result.modified_count > 0
         except PyMongoError as e:
-            print(f"Update many failed: {e}")
+            log.error(f"Update many failed: {e}")
             return False
 
     def delete_one(self, filter_query: dict) -> bool:
         try:
             result = self._collection.delete_one(filter_query)
-            print(f"Deleted: {result.deleted_count}")
+            log.info(f"Deleted document: {result.deleted_count}")
             return result.acknowledged and result.deleted_count > 0
         except PyMongoError as e:
-            print(f"Delete one failed: {e}")
+            log.error(f"Delete one failed: {e}")
             return False
 
     def delete_many(self, filter_query: dict = {}) -> bool:
         """On defualt arg, it will delete all argument"""
         try:
             result = self._collection.delete_many(filter_query)
-            print(f"Deleted: {result.deleted_count}")
+            log.info(f"Deleted all documents: {result.deleted_count}")
             return result.acknowledged and result.deleted_count > 0
         except PyMongoError as e:
-            print(f"Delete many failed: {e}")
+            log.error(f"Delete many failed: {e}")
             return False
 
     def close_connection(self):
@@ -183,15 +183,12 @@ class Authenticator(MongoDB):
         """
         matched_user = self.fetch_one({"userName": user_name})
         if not matched_user:
-            # TODO: FOR NOW JUST INSERTING USER NAME AND PASSWORD
-            print(f"User '{user_name}' not exist")
             st.error("E-mail not exist, please sign up.")
             return None
 
         password_hash = matched_user["password"]
         is_password_correct = bcrypt.checkpw(password.encode(), password_hash.encode())
         if not is_password_correct:
-            print(f"Entered incorrect password!")
             st.error(f"Entered incorrect password!")
             return None
 
