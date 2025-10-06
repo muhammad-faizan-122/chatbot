@@ -64,7 +64,7 @@ def app_page():
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
             response = st.write_stream(response_generator(prompt, chat_history))
-        log.debug(f"response by AI: {response}")
+
         # Add assistant response to chat history
         st.session_state["messages"].append({"role": "assistant", "content": response})
 

@@ -28,7 +28,7 @@ class LlamaGGUF(LLM):
             )
         return llm
 
-    def add_history(self, history: list) -> list[dict]:
+    def add_context(self, history: list) -> list[dict]:
         messages = []
         conversation = self.format_conversation(history)
         messages.append(
@@ -39,8 +39,12 @@ class LlamaGGUF(LLM):
         )
         return messages
 
-    def get_llm_generator(self, query: str, chat_history: list = []):
-        messages = self.add_history(chat_history)
+    def get_llm_generator(
+        self, query: str, chat_history: list = [], context_type="filter"
+    ):
+        managed_context = self.manage_context(chat_history, type=context_type)
+        log.debug(f"Context after context_manager: {managed_context}")
+        messages = self.add_context(managed_context)
         user_query = {"role": "user", "content": query}
         messages.append(user_query)
         log.debug(f"LLM Prompt: {messages}")

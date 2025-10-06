@@ -43,13 +43,15 @@ class LLM(ABC):
         ]
         return summary_prompt
 
-    def filter_messages(self, messages, max_turns=7):
+    def filter_messages(self, messages, max_turns=8):
         """single turn means if `Person: caption`"""
         total_messages = len(messages)
+
         # find the starting index conversation, -1 is due to index start from 0
-        start_conversation = max(0, total_messages - max_turns - 1)
+        start_conversation = max(0, total_messages - max_turns)
+
         # skip the latest user message
-        return messages[start_conversation:-1]
+        return messages[start_conversation:]
 
     def trim_messages(self, messages: list):
         NotImplemented
