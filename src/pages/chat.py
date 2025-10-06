@@ -1,7 +1,7 @@
 import streamlit as st
 from src.pages.utils.session_states import reset_session
 from src.llm.llm_factory import get_llm_instant
-from src.db.mongodb import MongoDB
+from src.db.mongodb import ChatDb
 from datetime import datetime
 from src.common.logger import log
 import uuid
@@ -34,7 +34,7 @@ def app_page():
     if "messages" not in st.session_state:
         st.session_state["messages"] = []
         st.session_state["llm"] = get_llm_instant(llm_type="llamacpp")
-        st.session_state["chat_db"] = MongoDB(db_name="bot", collection_name="chats")
+        st.session_state["chat_db"] = ChatDb(collection_name="chat")
         st.session_state["conversation_id"] = str(uuid.uuid4())
         st.session_state["tmp_history"] = []
 
@@ -72,8 +72,8 @@ def app_page():
         if st.session_state["guest_mode"]:
             st.session_state["tmp_history"].append({"user": prompt, "AI": response})
         else:
-            st.session_state["chat_db"].insert_one(
-                doc={
+            st.session_state["chat_db"].save_chat_history(
+                {
                     "user_id": st.session_state["user_id"],
                     "conversation_id": st.session_state["conversation_id"],
                     "user": prompt,

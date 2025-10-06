@@ -1,5 +1,5 @@
 import streamlit as st
-from src.db.mongodb import Authenticator
+from src.db.mongodb import AuthenticatorDb
 
 
 def init_session():
@@ -18,9 +18,7 @@ def init_session():
     if "password" not in st.session_state:
         st.session_state["password"] = ""
     if "auth_db" not in st.session_state:
-        st.session_state["auth_db"] = Authenticator(
-            db_name="bot", collection_name="users"
-        )
+        st.session_state["auth_db"] = AuthenticatorDb(collection_name="users")
 
 
 def reset_session():
