@@ -19,15 +19,19 @@ def login_page(guest_mode=False):
             password = st.text_input("Password", type="password")
 
             if st.button("Login"):
-                # time.sleep(2)
                 if not (email and password):
                     st.error("Please provide email and password")
 
                 elif email and password:
                     user_id = st.session_state["auth_db"].authenticate_user(
-                        email, password
+                        email,
+                        password,
                     )
-                    if user_id:
+                    if user_id == "no_user":
+                        st.error("E-mail not exist, please sign up.")
+                    elif user_id == "incorrect_password":
+                        st.error("Entered incorrect password!")
+                    else:
                         st.session_state["authenticated"] = True
                         st.session_state["page"] = "app"
                         st.session_state["user_id"] = user_id

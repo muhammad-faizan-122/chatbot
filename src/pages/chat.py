@@ -1,7 +1,7 @@
 import streamlit as st
 from src.pages.utils.session_states import reset_session
 from src.llm.llm_factory import get_llm_instant
-from src.db.mongodb import ChatDb
+from src.db.mongo.chat import ChatDb
 from datetime import datetime
 from src.common.logger import log
 import uuid
@@ -15,7 +15,6 @@ def response_generator(prompt, chat_history):
 
 
 def app_page():
-
     with st.sidebar:
         if st.session_state["guest_mode"]:
             st.subheader("Guest Mode")
@@ -34,7 +33,10 @@ def app_page():
     if "messages" not in st.session_state:
         st.session_state["messages"] = []
         st.session_state["llm"] = get_llm_instant(llm_type="llamacpp")
-        st.session_state["chat_db"] = ChatDb(collection_name="chat")
+        st.session_state["chat_db"] = ChatDb(
+            collection=st.session_state["db"]["chat"],
+            repo=st.session_state["repo"],
+        )
         st.session_state["conversation_id"] = str(uuid.uuid4())
         st.session_state["tmp_history"] = []
 
