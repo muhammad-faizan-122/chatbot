@@ -1,7 +1,7 @@
-import streamlit as st
 from src.db.mongo.auth import AuthenticatorDb
 from src.db.mongo.connection import get_database
 from src.db.mongo.repository import MongoRepository
+import streamlit as st
 
 
 def init_session():
