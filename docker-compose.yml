@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  app:
+    image: streamlit-chatbot:v1.0.0
+    container_name: streamlit-chatbot-container
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app  
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"

@@ -21,13 +21,18 @@ def init_session():
         st.session_state["password"] = ""
     if "db" not in st.session_state:
         st.session_state["db"] = get_database()
+        print("db: ", st.session_state["db"])
+
     if "repo" not in st.session_state:
         st.session_state["repo"] = MongoRepository()
+        print("repo: ", st.session_state["repo"])
+
     if "auth_db" not in st.session_state:
         st.session_state["auth_db"] = AuthenticatorDb(
             collection=st.session_state["db"]["users"],
             repo=st.session_state["repo"],
         )
+        print("auth_db: ", st.session_state["auth_db"])
 
 
 def reset_session():

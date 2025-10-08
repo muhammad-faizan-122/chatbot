@@ -1,7 +1,6 @@
 import streamlit as st
 
 
-# Pages
 def login_page(guest_mode=False):
     with st.empty().container(border=True):
         col1, _, col2 = st.columns([10, 1, 10])
@@ -29,6 +28,7 @@ def login_page(guest_mode=False):
                     )
                     if user_id == "no_user":
                         st.error("E-mail not exist, please sign up.")
+
                     elif user_id == "incorrect_password":
                         st.error("Entered incorrect password!")
                     else:
