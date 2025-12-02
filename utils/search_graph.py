@@ -119,7 +119,7 @@ class GraphBuilder:
             return "chatbot"
 
     @staticmethod
-    def build_graph(model_name: str = "google_genai:gemini-1.5-flash"):
+    def build_graph(model_name: str = "google_genai:gemini-2.5-flash"):
         """
         Builds and compiles the LangGraph.
         """
